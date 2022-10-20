@@ -15,23 +15,35 @@ public class JpaMain {
 
         try {
 
+            final Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
             final Member member = new Member();
-            member.setUsername("member1");
+            member.setUsername("관리자");
             member.setAge(10);
+            member.setType(MemberType.ADMIN);
+
+            member.setTeam(team);
+
             em.persist(member);
 
+            em.flush();
+            em.clear();
 
-            final Member result = em.createQuery("select m from Member m where m.username = :username", Member.class)
-                    .setParameter("username", "member1")
-                    .getSingleResult();
-            System.out.println("result = " + result.getUsername());
+            final String query = "select locate('de', 'abcdefg') from Member m ";
+            final List<Integer> result = em.createQuery(query, Integer.class)
+                    .getResultList();
 
-            //TypedQuery<String> query2 = em.createQuery("select m.username from Member m", String.class);
-            //Query query3 = em.createQuery("select m.username m.age from Member m");
+            for (Integer s : result) {
+                System.out.println("s = " + s);
+            }
+
 
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
+            e.printStackTrace();
         } finally {
             em.close();
         }
