@@ -1,6 +1,7 @@
 package jpql;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
 public class JpaMain {
@@ -15,30 +16,39 @@ public class JpaMain {
 
         try {
 
-            final Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
+            final Team teamA = new Team();
+            teamA.setName("팀A");
+            em.persist(teamA);
 
-            final Member member = new Member();
-            member.setUsername("관리자");
-            member.setAge(10);
-            member.setType(MemberType.ADMIN);
+            final Team teamB = new Team();
+            teamB.setName("팀B");
+            em.persist(teamB);
 
-            member.setTeam(team);
+            final Member member1 = new Member();
+            member1.setUsername("회원1");
+            member1.setTeam(teamA);
+            em.persist(member1);
 
-            em.persist(member);
+            final Member member2 = new Member();
+            member2.setUsername("회원2");
+            member2.setTeam(teamA);
+            em.persist(member2);
+
+            final Member member3 = new Member();
+            member3.setUsername("회원3");
+            member3.setTeam(teamB);
+            em.persist(member3);
 
             em.flush();
             em.clear();
 
-            final String query = "select locate('de', 'abcdefg') from Member m ";
-            final List<Integer> result = em.createQuery(query, Integer.class)
+            final String query = "select m from Member m join fetch m.team";
+            final List<Member> result = em.createQuery(query, Member.class)
                     .getResultList();
 
-            for (Integer s : result) {
-                System.out.println("s = " + s);
+            for (Member member : result) {
+                System.out.println("member = " + member.getUsername() + ", " + member.getTeam().getName());
             }
-
 
             tx.commit();
         } catch (Exception e) {
