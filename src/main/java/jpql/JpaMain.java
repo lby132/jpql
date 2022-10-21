@@ -26,29 +26,29 @@ public class JpaMain {
 
             final Member member1 = new Member();
             member1.setUsername("회원1");
+            member1.setAge(0);
             member1.setTeam(teamA);
             em.persist(member1);
 
             final Member member2 = new Member();
             member2.setUsername("회원2");
+            member1.setAge(0);
             member2.setTeam(teamA);
             em.persist(member2);
 
             final Member member3 = new Member();
             member3.setUsername("회원3");
+            member1.setAge(0);
             member3.setTeam(teamB);
             em.persist(member3);
 
-            em.flush();
+            //FLUSH 자동 호출
+            final int resultCount = em.createQuery("update Member m set m.age = 20")
+                    .executeUpdate();
+
             em.clear();
-
-            final List<Member> findMember = em.createNamedQuery("Member.findByUsername", Member.class)
-                    .setParameter("username", "회원1")
-                    .getResultList();
-
-            for (Member member : findMember) {
-                System.out.println("member = " + member);
-            }
+            final Member findMember = em.find(Member.class, member1.getId());
+            System.out.println("resultCount = " + findMember.getAge());
 
             tx.commit();
         } catch (Exception e) {
