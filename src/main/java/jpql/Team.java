@@ -1,5 +1,7 @@
 package jpql;
 
+import org.hibernate.annotations.BatchSize;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,8 +17,9 @@ public class Team {
 
     private String name;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "team")
-    private List<Member> member = new ArrayList<>();
+    private List<Member> members = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -34,11 +37,11 @@ public class Team {
         this.name = name;
     }
 
-    public List<Member> getMember() {
-        return member;
+    public List<Member> getMembers() {
+        return members;
     }
 
-    public void setMember(List<Member> member) {
-        this.member = member;
+    public void setMember(List<Member> members) {
+        this.members = members;
     }
 }
